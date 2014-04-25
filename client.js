@@ -10,6 +10,8 @@
   var isInit = false;
   var parentID = '';
 
+  win.parentInfo = win.parentInfo || {};
+
   /**
    * Initialize the client
    * 1. Provide the interface globally
@@ -70,6 +72,15 @@
     if (win.SiteCanvasAsyncInit) {
       win.SiteCanvasAsyncInit();
     }
+  };
+
+  /**
+   * Save viewport dimensions sent from parent frame. Useful for DOM element positioning
+   */
+  FrameInterface.calculateViewportDimensions = function (dimensions) {
+    var dimensionsArr = dimensions.split(',');
+    win.parentInfo.viewportWidth = dimensionsArr[0];
+    win.parentInfo.viewportHeight = dimensionsArr[1];
   };
 
   var CanvasInteface_autoGrowInterval = null;

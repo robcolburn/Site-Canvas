@@ -18,6 +18,9 @@
   function init () {
     win.SiteCanvas = PageInterface;
     on(win, 'message', onMessage);
+
+    on(win, 'load', FrameInterface.calculateViewportDimensions);
+    on(win, 'resize', FrameInterface.calculateViewportDimensions);
   }
 
 
@@ -93,6 +96,16 @@
       frame.el.style.height = height + 'px';
       frame.height = height;
     }
+  };
+
+  /**
+   * Calculates the parent frames dimensions and sends to the framed page
+   */
+  FrameInterface.calculateViewportDimensions = function () {
+    var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+    sendMessage(id, 'calculateViewportDimensions', [width, height]);
   };
 
   /**
