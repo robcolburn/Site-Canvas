@@ -117,6 +117,17 @@
   };
 
   /**
+   * Set a close confirmation message on the parent mesage
+   *
+   * @param {string} confirmMessage
+   *   The message to display when the window is closed,
+   *   or the empty string to unset.
+   */
+  CanvasInteface.setCloseConfirm = function (confirmMessage) {
+    sendMessage('confirmMessage', confirmMessage);
+  };
+
+  /**
    * Utitily. Deliver Error mesage to console
    * @param {string} message to display
    */
