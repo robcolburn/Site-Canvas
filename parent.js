@@ -144,7 +144,7 @@
   function parseURI (uri) {
     var split = uri.match(parseURI.rx);
     return {
-      protocol: split[1] && split[1] + ':',
+      protocol: split[1] ? split[1] + ':' : '',
       user_info: split[2],
       host: split[3],
       port: split[4],
