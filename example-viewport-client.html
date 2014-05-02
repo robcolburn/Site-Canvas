@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Viewport</title>
+<script src="client.js"></script>
+<script>
+function SiteCanvasAsyncInit () {
+  SiteCanvas.setResizeListener(function () {
+    document.getElementById('text').append(arguments.join(','));
+  });
+}
+</script>
+</head>
+<body>
+
+<textarea id="text">
+	
+</textarea>
+
+</body>
+</html>

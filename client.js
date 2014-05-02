@@ -74,10 +74,13 @@
 
   /**
    * Save viewport dimensions sent from parent frame. Useful for DOM element positioning
+   * @param {int} width
+   * @param {int} height
    */
   FrameInterface.setViewportDimensions = function (width, height) {
     CanvasInterface.viewportWidth = width;
     CanvasInterface.viewportHeight = height;
+    CanvasInterface.trigger('setViewportDimensions', width, height);
   };
 
   var CanvasInterface_autoGrowInterval = null;
@@ -88,6 +91,37 @@
    */
   var CanvasInterface = {};
 
+  /**
+   * Simple events interface
+   */
+  CanvasInterface.events = {};
+  /**
+   * Listen to an event
+   * @param {string} name
+   *   Of the event to listen to
+   * @param {function} callback
+   */
+  CanvasInterface.on = function (name, callback) {
+    if (!CanvasInterface.events[name]) {
+      CanvasInterface.events[name] = [];
+    }
+    CanvasInterface.events[name].push(callback);
+  };
+  /**
+   * Emit an event
+   * @param {string} name
+   *   Of the event to fire
+   * @rest other parameters to pass to event
+   */
+  CanvasInterface.emit = function (name) {
+    if (!CanvasInterface.events[name]) {
+      return;
+    }
+    var args = Array.prototype.slice.call(arguments, 1);
+    for (var i = 0; i < CanvasInterface.events.length; i++) {
+      CanvasInterface.events[name][i].apply(CanvasInterface, args);
+    }
+  };
   /**
    * Sets the size of the containing frame
    *
@@ -125,6 +159,15 @@
   };
 
   /**
+   * On parent resize, get viewport size
+   */
+  CanvasInterface.setResizeListener = function (callback) {
+    sendMessage('setResizeListener');
+    CanvasInterface.on('setViewportDimensions', callback);
+  };
+
+
+  /**
    * Set a close confirmation message on the parent mesage
    *
    * @param {string} confirmMessage
@@ -132,7 +175,7 @@
    *   or the empty string to unset.
    */
   CanvasInterface.setCloseConfirm = function (confirmMessage) {
-    sendMessage('confirmMessage', confirmMessage);
+    sendMessage('setCloseConfirm', confirmMessage);
   };
 
   /**

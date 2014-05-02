@@ -18,9 +18,6 @@
   function init () {
     win.SiteCanvas = PageInterface;
     on(win, 'message', onMessage);
-
-    on(win, 'load', FrameInterface.calculateViewportDimensions);
-    on(win, 'resize', FrameInterface.calculateViewportDimensions);
   }
 
 
@@ -77,6 +74,12 @@
    */
   var FrameInterface = {};
   /**
+   * The initializer helps the child frame identify itself
+   */
+  FrameInterface.init = function (frame) {
+    sendMessage(frame.id, 'init', frame.id);
+  };
+  /**
    * Sets the size of the child frame
    * @param {DOMElement} frame
    *   An element of the frame we will manipulate
@@ -129,6 +132,24 @@
     }
     return FrameInterface.confirmMessage;
   }
+  /**
+   * Sets the frame to listen to resize events
+   */
+  FrameInterface.setResizeListener = function (frame) {
+    on(window, 'resize', function () {
+      FrameInterface.getViewportDimensions(frame);
+    });
+  };
+
+  /**
+   * Calculates this parent frame's dimensions
+   * Delivers to client by funciton call
+   */
+  FrameInterface.getViewportDimensions = function (frame) {
+    var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    sendMessage(frame.id, 'setViewportDimensions', width,  height);
+  };
 
   /**
    * PageInterface is a set of methods exposted to the page.
@@ -145,7 +166,7 @@
     if (!id) {
       el.id = id = 'site-canvas-' + (numFrames + 1);
     }
-    frames[id] = {
+    var frame = frames[id] = {
       el: el,
       id: id,
       width: el.offsetWidth,
@@ -153,23 +174,12 @@
       origin: getOriginURI( parseURI(el.getAttribute('src')) )
     };
     numFrames++;
-    sendMessage(id, 'init', id);
+    FrameInterface.init(frame);
     on(el, 'load', function () {
-      sendMessage(id, 'init', id);
-      sendMessage(id, 'viewportDimensions', calculateViewportDimensions());
+      FrameInterface.init(frame);
+      FrameInterface.getViewportDimensions(frame);
     });
   };
-
-  /**
-   * Calculates the parent frames dimensions
-   * @return {string}
-   *   Returns the width and height as an array
-   */
-  function calculateViewportDimensions () {
-    var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    return width + ',' + height;
-  }
 
   /**
    * Returns a parsed URI object from a string
