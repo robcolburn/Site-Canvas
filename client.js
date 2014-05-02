@@ -16,7 +16,7 @@
    * 2. Listen for events from parent
    */
   function init () {
-    win.SiteCanvas = CanvasInteface;
+    win.SiteCanvas = CanvasInterface;
     on(win, 'message', onMessage);
   }
 
@@ -76,17 +76,17 @@
    * Save viewport dimensions sent from parent frame. Useful for DOM element positioning
    */
   FrameInterface.setViewportDimensions = function (width, height) {
-    CanvasInteface.viewportWidth = width;
-    CanvasInteface.viewportHeight = height;
+    CanvasInterface.viewportWidth = width;
+    CanvasInterface.viewportHeight = height;
   };
 
-  var CanvasInteface_autoGrowInterval = null;
+  var CanvasInterface_autoGrowInterval = null;
   /**
-   * CanvasInteface is a set of functions we expose to the page
+   * CanvasInterface is a set of functions we expose to the page
    * @see https://developers.facebook.com/docs/reference/javascript/FB.Canvas.setSize
    * @see https://developers.facebook.com/docs/reference/javascript/FB.Canvas.setAutoGrow/
    */
-  var CanvasInteface = {};
+  var CanvasInterface = {};
 
   /**
    * Sets the size of the containing frame
@@ -97,7 +97,7 @@
    * @param {int} params.height - New height
    *   Desired height. Default frame height
    */
-  CanvasInteface.setSize = function (params) {
+  CanvasInterface.setSize = function (params) {
     params = params || {};
     var width = parseInt(params.width || doc.offsetWidth || win.innerWidth || doc.clientWidth, 0) || 0;
     var height = parseInt(params.height || doc.offsetHeight || win.innerHeight || doc.clientHeight, 0) || 0;
@@ -111,16 +111,16 @@
    *   Whether to turn the timer on or off. truthy == on, falsy == off. default is true
    *   How often to resize (in ms). default is 100ms
    */
-  CanvasInteface.setAutoGrow = function (interval) {
+  CanvasInterface.setAutoGrow = function (interval) {
     if (typeof interval === 'undefined') {
       interval = 100;
     }
-    if (CanvasInteface_autoGrowInterval !== null) {
-      clearInterval(CanvasInteface_autoGrowInterval);
-      CanvasInteface_autoGrowInterval = null;
+    if (CanvasInterface_autoGrowInterval !== null) {
+      clearInterval(CanvasInterface_autoGrowInterval);
+      CanvasInterface_autoGrowInterval = null;
     }
     if (interval) {
-      CanvasInteface_autoGrowInterval = setInterval(CanvasInteface.setSize, interval);
+      CanvasInterface_autoGrowInterval = setInterval(CanvasInterface.setSize, interval);
     }
   };
 
@@ -131,7 +131,7 @@
    *   The message to display when the window is closed,
    *   or the empty string to unset.
    */
-  CanvasInteface.setCloseConfirm = function (confirmMessage) {
+  CanvasInterface.setCloseConfirm = function (confirmMessage) {
     sendMessage('confirmMessage', confirmMessage);
   };
 
