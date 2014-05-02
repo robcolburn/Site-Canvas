@@ -77,7 +77,7 @@
    */
   var FrameInterface = {};
   /**
-   * Sets the 
+   * Sets the size of the child frame
    * @param {DOMElement} frame
    *   An element of the frame we will manipulate
    * @param {int} width
@@ -97,7 +97,6 @@
       frame.height = height;
     }
   };
-
   /**
    * Calculates the parent frames dimensions and sends to the framed page
    */
@@ -107,6 +106,38 @@
 
     sendMessage(id, 'calculateViewportDimensions', [width, height]);
   };
+  /**
+   * Sets or unsets a close confirmation message
+   * @param {DOMElement} frame
+   *   An element of the frame we will manipulate
+   * @param {string} confirmMessage
+   *   The desired confirmation to set or the empty string to unset
+   */
+  FrameInterface.setCloseConfirm = function (frame, confirmMessage) {
+    // Just in case we parsed the commas, let's bring those back
+    if (arguments.length > 2) {
+      confirmMessage = Array.prototype.join.call(arguments, ',');
+    }
+    if (confirmMessage && !window.onbeforeunload) {
+      window.onbeforeunload = onUnloadMessage;
+    }
+    if (!confirmMessage && window.onbeforeunload) {
+      window.onbeforeunload = null;
+    }
+    FrameInterface.confirmMessage = confirmMessage;
+    // http://www.opera.com/support/kb/view/827/
+    try {
+      window.opera.setOverrideHistoryNavigationMode('compatible');
+      history.navigationMode = 'compatible';
+    }
+    catch(e){}
+  };
+  function onUnloadMessage (event) {
+    if (event.returnVal) {
+      event.returnVal = FrameInterface.confirmMessage;
+    }
+    return FrameInterface.confirmMessage;
+  }
 
   /**
    * PageInterface is a set of methods exposted to the page.
