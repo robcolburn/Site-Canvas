@@ -98,15 +98,6 @@
     }
   };
   /**
-   * Calculates the parent frames dimensions and sends to the framed page
-   */
-  FrameInterface.calculateViewportDimensions = function () {
-    var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-
-    sendMessage(id, 'calculateViewportDimensions', [width, height]);
-  };
-  /**
    * Sets or unsets a close confirmation message
    * @param {DOMElement} frame
    *   An element of the frame we will manipulate
@@ -165,8 +156,20 @@
     sendMessage(id, 'init', id);
     on(el, 'load', function () {
       sendMessage(id, 'init', id);
+      sendMessage(id, 'viewportDimensions', calculateViewportDimensions());
     });
   };
+
+  /**
+   * Calculates the parent frames dimensions
+   * @return {string}
+   *   Returns the width and height as an array
+   */
+  function calculateViewportDimensions () {
+    var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    return width + ',' + height;
+  }
 
   /**
    * Returns a parsed URI object from a string
