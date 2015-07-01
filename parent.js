@@ -29,6 +29,9 @@
    * @param {Event} event
    */
   function onMessage (event) {
+    if (typeof event.data !== 'string') {
+      return;
+    }
     var message = event.data || '';
     var parts = message.split('::');
     if (parts.length !== 3 || parts[0] !== 'SiteCanvas') {
@@ -38,7 +41,7 @@
     var args = parts[2].split(',');
     var frame = frames[args.shift()];
     args.unshift(frame);
-    if (event.origin !== frame.origin) {
+    if (event.origin !== frame.origin && frame.origin !== '*') {
       warn('Message origin did match Frame origin');
       return;
     }
@@ -188,7 +191,13 @@
    * @return {string}
    */
   function getOriginURI (uri) {
-    return uri.protocol + '//' + uri.host;
+    if (uri.host) {
+      return (uri.protocol || location.protocol || '') + '//' + uri.host + (uri.port ? ':' + uri.port : '');
+    }
+    if (location.host) {
+      return (location.protocol || '') + '//' + location.host + (location.port ? ':' + location.port : '');
+    }
+    return '*';
   }
 
   /**
@@ -201,7 +210,7 @@
   function parseURI (uri) {
     var split = uri.match(parseURI.rx);
     return {
-      protocol: split[1] ? split[1] + ':' : '',
+      protocol: split[1] && split[1] + ':',
       user_info: split[2],
       host: split[3],
       port: split[4],

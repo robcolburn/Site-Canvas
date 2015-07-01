@@ -7,7 +7,10 @@
 </head>
 <body>
 
-<iframe src="client.html" frameborder="0" width="400" height="400"></iframe>
+<iframe src="client.html" id="client_frame" frameborder="0" width="400" height="400"></iframe>
 
+<script>
+SiteCanvas.registerFrame(document.getElementById('client_frame'));
+</script>
 </body>
 </html>

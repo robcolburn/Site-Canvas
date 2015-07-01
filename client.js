@@ -80,7 +80,7 @@
   FrameInterface.setViewportDimensions = function (width, height) {
     CanvasInterface.viewportWidth = width;
     CanvasInterface.viewportHeight = height;
-    CanvasInterface.trigger('setViewportDimensions', width, height);
+    CanvasInterface.emit('setViewportDimensions', width, height);
   };
 
   var CanvasInterface_autoGrowInterval = null;
@@ -118,7 +118,7 @@
       return;
     }
     var args = Array.prototype.slice.call(arguments, 1);
-    for (var i = 0; i < CanvasInterface.events.length; i++) {
+    for (var i = 0; i < CanvasInterface.events[name].length; i++) {
       CanvasInterface.events[name][i].apply(CanvasInterface, args);
     }
   };
@@ -162,8 +162,8 @@
    * On parent resize, get viewport size
    */
   CanvasInterface.setResizeListener = function (callback) {
-    sendMessage('setResizeListener');
     CanvasInterface.on('setViewportDimensions', callback);
+    sendMessage('setResizeListener');
   };
 
 

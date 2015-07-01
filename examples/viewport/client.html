@@ -4,19 +4,18 @@
 <meta charset="utf-8">
 <title>Viewport</title>
 <script src="../../client.js"></script>
-<script>
-function SiteCanvasAsyncInit () {
-  SiteCanvas.setResizeListener(function () {
-    document.getElementById('text').append(arguments.join(','));
-  });
-}
-</script>
+
 </head>
 <body>
 
-<textarea id="text">
-	
-</textarea>
-
+<textarea id="text" rows="20" cols="10"></textarea>
+<script>
+function SiteCanvasAsyncInit () {
+  SiteCanvas.setResizeListener(function () {
+    var message = Array.prototype.join.call(arguments, ',') + "\n";
+    document.getElementById('text').innerHTML += message;
+  });
+}
+</script>
 </body>
 </html>
